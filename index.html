@@ -8,95 +8,100 @@
     <title>无情的赚钱机器</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@800&display=swap');
-        body { background-color: #050505; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        .font-mono-custom { font-family: 'JetBrains Mono', monospace; }
-        .glass-panel { 
-            background: rgba(20, 20, 20, 0.7); 
-            backdrop-filter: blur(30px); 
-            -webkit-backdrop-filter: blur(30px); 
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        body { background-color: #0a0a0a; font-family: -apple-system, system-ui, sans-serif; }
+        .glass-card { 
+            background: rgba(30, 30, 30, 0.6); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .input-group { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; transition: all 0.3s; }
-        .input-group:focus-within { background: rgba(255, 255, 255, 0.08); border-color: rgba(250, 204, 21, 0.4); }
-        input { background: transparent !important; color: white; outline: none; font-weight: 600; width: 100%; text-align: center; font-size: 14px; padding: 4px 0; }
-        @keyframes flow { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-        .progress-line { overflow: hidden; position: relative; }
-        .progress-line::after { content: ""; position: absolute; top: 0; left: 0; width: 40%; height: 100%; background: linear-gradient(90deg, transparent, rgba(250, 204, 21, 0.4), transparent); animation: flow 2s infinite linear; }
-        #settings-panel { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .hidden-settings { opacity: 0; transform: translateY(-10px); pointer-events: none; height: 0; margin-bottom: 0; }
+        /* 直观的输入框样式 */
+        .control-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .input-pill {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(250, 204, 21, 0.2);
+            border-radius: 12px;
+            color: #fbbf24;
+            font-weight: 800;
+            text-align: center;
+            height: 40px;
+            width: 100%;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .input-pill:focus {
+            border-color: #fbbf24;
+            box-shadow: 0 0 10px rgba(250, 204, 21, 0.2);
+        }
+        .label-text {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 6px;
+            display: block;
+            font-weight: 600;
+        }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6 text-slate-200">
+<body class="min-h-screen flex items-center justify-center p-5 text-slate-100">
 
-    <div class="glass-panel w-full max-w-sm rounded-[3rem] p-8 relative overflow-hidden">
-        <div class="absolute -top-24 -right-24 w-48 h-48 bg-yellow-500/10 rounded-full blur-[80px]"></div>
+    <div class="glass-card w-full max-w-sm rounded-[2.5rem] p-6 shadow-2xl relative overflow-hidden">
         
-        <div class="text-center mb-10 cursor-pointer" onclick="toggleSettings()">
-            <div class="flex items-center justify-center gap-2 mb-1">
-                <span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
-                <span class="text-[10px] tracking-[0.3em] font-bold opacity-40 uppercase">System Active</span>
-            </div>
-            <h1 class="text-2xl font-black tracking-tighter text-white">无情的赚钱机器</h1>
-            <p class="text-[9px] opacity-30 mt-1">TAP TO CONFIGURE</p>
+        <div class="absolute -top-10 -left-10 w-32 h-32 bg-yellow-500/10 rounded-full blur-3xl"></div>
+
+        <div class="text-center mb-6">
+            <h1 class="text-xl font-black italic tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">
+                无情的赚钱机器
+            </h1>
         </div>
 
-        <div id="settings-panel" class="space-y-4 mb-8">
-            <div class="grid grid-cols-1 gap-3">
-                <div class="input-group p-3">
-                    <span class="text-[9px] opacity-30 block text-center mb-1 tracking-widest uppercase">Monthly Salary (RMB)</span>
-                    <input id="sal" type="number" value="15000" placeholder="0.00">
+        <div class="control-panel mb-6 space-y-4">
+            <div>
+                <span class="label-text text-center">月薪预设 (Monthly Salary)</span>
+                <input id="sal" type="number" value="15000" class="input-pill" oninput="update()">
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <span class="label-text text-center">上班 (Start)</span>
+                    <input id="startTime" type="time" value="09:00" class="input-pill" oninput="update()">
+                </div>
+                <div>
+                    <span class="label-text text-center">下班 (End)</span>
+                    <input id="endTime" type="time" value="18:00" class="input-pill" oninput="update()">
                 </div>
             </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div class="input-group p-3">
-                    <span class="text-[9px] opacity-30 block text-center mb-1 tracking-widest uppercase">Start Time</span>
-                    <input id="startTime" type="time" value="09:00">
-                </div>
-                <div class="input-group p-3">
-                    <span class="text-[9px] opacity-30 block text-center mb-1 tracking-widest uppercase">End Time</span>
-                    <input id="endTime" type="time" value="18:00">
-                </div>
+        </div>
+
+        <div class="bg-gradient-to-b from-black/60 to-black/20 rounded-[2rem] py-10 px-2 border border-white/5 text-center mb-6 relative">
+            <div class="absolute top-4 left-1/2 -translate-x-1/2 w-12 h-1 bg-white/5 rounded-full"></div>
+            <span class="text-[9px] font-bold text-yellow-500/50 tracking-[0.4em] uppercase block mb-2">Real-time Revenue</span>
+            <div id="moneyDisplay" class="text-4xl font-black tracking-tighter text-white tabular-nums drop-shadow-2xl">
+                ¥0.0000
             </div>
         </div>
 
-        <div class="relative mb-8 group">
-            <div class="absolute -inset-1 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-[2.5rem] blur opacity-25"></div>
-            <div class="relative bg-black/60 rounded-[2.5rem] py-14 px-4 border border-white/5 text-center">
-                <span class="text-[10px] font-bold text-yellow-500/50 tracking-widest uppercase block mb-3">Net Profit</span>
-                <div id="moneyDisplay" class="font-mono-custom text-5xl font-black tracking-tighter text-white">¥0.0000</div>
-            </div>
-        </div>
-
-        <div class="px-2 mb-8">
-            <div class="flex justify-between text-[10px] font-bold opacity-40 mb-2 uppercase tracking-tighter">
-                <span>Working Progress</span>
-                <span id="percentDisplay">0%</span>
-            </div>
-            <div class="h-[6px] bg-white/5 rounded-full progress-line">
-                <div id="progressBar" class="h-full bg-yellow-500 rounded-full transition-all duration-500" style="width: 0%"></div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 gap-3">
             <div class="bg-white/[0.02] rounded-2xl p-4 border border-white/5">
-                <span class="block text-[9px] opacity-30 uppercase font-bold mb-1">Today's Goal</span>
-                <span id="dailyGoal" class="text-sm font-bold text-white">¥0.00</span>
+                <span class="label-text">今日进度</span>
+                <div id="percentDisplay" class="text-lg font-bold text-white italic">0%</div>
             </div>
             <div class="bg-white/[0.02] rounded-2xl p-4 border border-white/5">
-                <span class="block text-[9px] opacity-30 uppercase font-bold mb-1">Earned Lunch</span>
-                <span id="lunchDisplay" class="text-sm font-bold text-yellow-500">0.0 顿</span>
+                <span class="label-text">已赚午饭</span>
+                <div id="lunchDisplay" class="text-lg font-bold text-yellow-500 italic text-right">0.0 顿</div>
             </div>
         </div>
+
+        <p class="text-[8px] text-center opacity-20 mt-6 tracking-widest uppercase italic">The machine has no feelings.</p>
     </div>
 
     <script>
-        function toggleSettings() {
-            const panel = document.getElementById('settings-panel');
-            panel.classList.toggle('hidden-settings');
-        }
-
         function update() {
             const salary = parseFloat(document.getElementById('sal').value) || 0;
             const startStr = document.getElementById('startTime').value;
@@ -110,30 +115,6 @@
             const endTime = new Date(); endTime.setHours(eh, em, 0);
             
             const dailyPay = salary / 21.75;
-            document.getElementById('dailyGoal').innerText = `¥${dailyPay.toFixed(2)}`;
 
             if (now < startTime) {
                 render(0, 0);
-            } else if (now > endTime) {
-                render(dailyPay, 100);
-            } else {
-                const totalMs = endTime - startTime;
-                const passedMs = now - startTime;
-                const progress = passedMs / totalMs;
-                render(progress * dailyPay, progress * 100);
-            }
-        }
-
-        function render(money, percent) {
-            document.getElementById('moneyDisplay').innerText = `¥${money.toFixed(4)}`;
-            document.getElementById('percentDisplay').innerText = `${percent.toFixed(1)}%`;
-            document.getElementById('progressBar').style.width = `${percent}%`;
-            document.getElementById('lunchDisplay').innerText = `${(money/30).toFixed(1)} 顿`;
-        }
-
-        setInterval(update, 100);
-        // 初始化隐藏设置
-        setTimeout(toggleSettings, 1000);
-    </script>
-</body>
-</html>
