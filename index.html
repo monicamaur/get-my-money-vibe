@@ -12,10 +12,14 @@
         .glass-card { background: rgba(25, 25, 25, 0.7); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); }
         .input-pill { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: #fbbf24; font-weight: 800; text-align: center; height: 44px; width: 100%; outline: none; }
         .btn-start { background: linear-gradient(135deg, #fbbf24, #d97706); color: #000; font-weight: 800; border-radius: 12px; transition: all 0.2s; }
-        .btn-start:active { transform: scale(0.95); opacity: 0.9; }
+        .btn-start:active { transform: scale(0.95); }
         #settings-area { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); max-height: 500px; }
         .collapsed { max-height: 0 !important; opacity: 0; pointer-events: none; margin-bottom: 0 !important; transform: translateY(-20px); }
-        .quote-box { min-height: 3rem; display: flex; align-items: center; justify-content: center; text-align: center; }
+        
+        /* 鼓励语交互效果 */
+        .quote-container { transition: all 0.2s; cursor: pointer; user-select: none; }
+        .quote-container:active { transform: scale(0.9); opacity: 0.6; }
+        .quote-tag { font-[10px]; color: #fbbf24; opacity: 0.5; margin-bottom: 4px; display: block; font-weight: bold; letter-spacing: 1px;}
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-6 text-slate-100">
@@ -24,13 +28,13 @@
         
         <div class="text-center mb-6">
             <h1 class="text-2xl font-black italic tracking-tighter text-white">无情的赚钱机器</h1>
-            <div id="edit-icon" class="hidden inline-block mt-2 opacity-30 text-[10px] border border-white/20 px-2 py-1 rounded-full" onclick="toggleSettings()">修改设置 ⚙️</div>
+            <div id="edit-icon" class="hidden inline-block mt-2 opacity-30 text-[10px] border border-white/20 px-2 py-1 rounded-full" onclick="toggleSettings()">修改参数 ⚙️</div>
         </div>
 
         <div id="settings-area" class="space-y-4 mb-8">
             <div class="space-y-3">
                 <div>
-                    <label class="text-[10px] opacity-40 block mb-1 font-bold ml-2">预计月薪 (RMB)</label>
+                    <label class="text-[10px] opacity-40 block mb-1 font-bold ml-2">月薪 (RMB)</label>
                     <input id="sal" type="number" value="15000" class="input-pill">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
@@ -39,99 +43,3 @@
                         <input id="startTime" type="time" value="09:00" class="input-pill">
                     </div>
                     <div>
-                        <label class="text-[10px] opacity-40 block mb-1 font-bold ml-2">下班时间</label>
-                        <input id="endTime" type="time" value="18:00" class="input-pill">
-                    </div>
-                </div>
-            </div>
-            <button onclick="startMachine()" class="btn-start w-full py-3 mt-2">确认并开启赚钱模式</button>
-        </div>
-
-        <div id="display-area" class="opacity-20 transition-opacity duration-700">
-            <div class="bg-black/50 rounded-[2.5rem] py-14 px-2 border border-white/5 text-center mb-8 relative">
-                <span class="text-[10px] font-bold text-yellow-500/50 tracking-[0.4em] uppercase block mb-3">Today's Revenue</span>
-                <div id="moneyDisplay" class="text-5xl font-black tracking-tighter text-white tabular-nums">¥0.00</div>
-            </div>
-
-            <div class="quote-box px-4 mb-8">
-                <p id="quote" class="text-sm font-medium text-yellow-500/80 italic leading-relaxed"></p>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-white/[0.03] rounded-2xl p-4 border border-white/5 text-center">
-                    <span class="text-[9px] opacity-30 block mb-1 uppercase font-bold">进度</span>
-                    <span id="percentDisplay" class="text-lg font-bold">0%</span>
-                </div>
-                <div class="bg-white/[0.03] rounded-2xl p-4 border border-white/5 text-center">
-                    <span class="text-[9px] opacity-30 block mb-1 uppercase font-bold">已赚午饭</span>
-                    <span id="lunchDisplay" class="text-lg font-bold text-yellow-300">0 顿</span>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        const quotes = [
-            "每一秒的坚持，都是在向老板‘复仇’。",
-            "现在的汗水，都是为了下班后的自由。",
-            "身体在搬砖，灵魂在度假。",
-            "莫得感情，我只是一个财富搬运工。",
-            "加油，再撑一会儿就能吃顿好的了！",
-            "只要你速度够快，贫穷就追不上你。",
-            "你赚的不是钱，是通往自由的入场券。"
-        ];
-
-        function startMachine() {
-            document.getElementById('settings-area').classList.add('collapsed');
-            document.getElementById('display-area').classList.remove('opacity-20');
-            document.getElementById('edit-icon').classList.remove('hidden');
-            changeQuote();
-            setInterval(update, 100);
-            setInterval(changeQuote, 10000); // 每10秒换一句鼓励的话
-        }
-
-        function toggleSettings() {
-            const area = document.getElementById('settings-area');
-            area.classList.toggle('collapsed');
-        }
-
-        function changeQuote() {
-            const q = quotes[Math.floor(Math.random() * quotes.length)];
-            document.getElementById('quote').innerText = `“ ${q} ”`;
-        }
-
-        function update() {
-            const salary = parseFloat(document.getElementById('sal').value) || 0;
-            const startStr = document.getElementById('startTime').value;
-            const endStr = document.getElementById('endTime').value;
-            
-            const now = new Date();
-            const [sh, sm] = startStr.split(':');
-            const [eh, em] = endStr.split(':');
-            
-            const startTime = new Date(); startTime.setHours(sh, sm, 0);
-            const endTime = new Date(); endTime.setHours(eh, em, 0);
-            const dailyPay = salary / 21.75;
-
-            if (now < startTime) {
-                render(0, 0);
-            } else if (now > endTime) {
-                render(dailyPay, 100);
-            } else {
-                const totalMs = endTime - startTime;
-                const passedMs = now - startTime;
-                const progress = passedMs / totalMs;
-                render(progress * dailyPay, progress * 100);
-            }
-        }
-
-        function render(money, percent) {
-            // 这里控制最多两位小数
-            document.getElementById('moneyDisplay').innerText = `¥${money.toFixed(2)}`;
-            document.getElementById('percentDisplay').innerText = `${percent.toFixed(1)}%`;
-            document.getElementById('lunchDisplay').innerText = `${(money/30).toFixed(1)} 顿`;
-        }
-    </script>
-</body>
-</html>
